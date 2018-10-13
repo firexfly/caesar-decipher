@@ -45,7 +45,7 @@ my $path_to_dictionary;
 
 # No. of plaintext candidates to display, default is best match only
 # Set to 0 to display all candidate plaintexts as it wouldn't make sense to display none
-my $candidate_pt_to_display = 0;
+my $candidate_pt_to_display = 1;
 
 
 ### END CUSTOM SETTINGS ###
