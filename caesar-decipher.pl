@@ -45,7 +45,7 @@ my $path_to_dictionary;
 
 # No. of plaintext candidates to display, default is best match only
 # Set to 0 to display all candidate plaintexts as it wouldn't make sense to display none
-my $candidate_pt_to_display = 1;
+my $candidate_pt_to_display = 0;
 
 
 ### END CUSTOM SETTINGS ###
@@ -104,6 +104,19 @@ sub match_ciphertext {
     &match_ciphertext ($dictionary, $candidate_pt, $index + 1);
 }
 
+sub calculate_shift {
+    my $offset = shift;
+
+    if ($offset == 13) {
+        return "ROT13";
+    } elsif ($offset == 26) {
+        return "Original";
+    } else {
+        my $left_shift = 26 - $offset;
+        return "Caesar cipher left shift: $left_shift";
+    }
+}
+
 ### Main ###
 
 # If a file was given as input, check it exists and is not empty.
@@ -158,8 +171,8 @@ for my $candidate (sort {
     state $candidate_count ++; # display set number of results
     if ($candidate->[2] || $candidate_pt_to_display == 0) { # if at least 1 word matched dictionary
         my ($total_words, $guess) = @$candidate[1,2];
-        # get shift value - could improve to show left and right shift - create a sub called calculate_shift which returns shift
-        my $shift_value = $candidate->[-1] == 13 ? "ROT13" : "Caesar cipher shift: $candidate->[-1]";
+        # get shift value - run sub to get non right shift
+        my $shift_value = $candidate->[-1] < 13 ? "Caesar cipher right shift: $candidate->[-1]" : &calculate_shift ($candidate->[-1]);
         say "Candidate plaintext - $shift_value (matches $guess\/", $total_words, " words):";
         print $candidate->[0];
         say "---------------------------------------";
